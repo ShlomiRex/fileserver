@@ -185,26 +185,28 @@ int bind(int sockfd, const struct sockaddr *addr,
     printf("Received %d bytes : %s\n", bytes_recv, recv_buf);
 
     //Process message
-    if(recv_buf[0] == 0x0a) {
-
-    }
-    
     char first_byte = recv_buf[0];
 
     if(first_byte == REQCODE_DIR_LIST) {
         printf("Directory listing request!\n");
-        int res = send_list_dir(connfd, "/home/shlomi/");
+
+        char *request_dir = recv_buf+1; //skip first byte
+        printf("Request dir: %s\n", request_dir);
+
+        int res = send_list_dir(connfd, request_dir);
         if(res != 0) {
             perror("send_list_dir");
             exit(res);
         }
+
+
     } else {
         printf("Invalid code: %d\n", (int)recv_buf[0]);
         exit(1);
     }
 
     close(sockfd);
-    
+    close(connfd);
 
     return 0;
 }

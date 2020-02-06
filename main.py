@@ -8,6 +8,10 @@ import socket
 # Request codes
 REQCODE_DIR_LIST = 10 #0x0a
 
+
+
+PCKT_LEN_MAX = 15000
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 def req_dir_list(dir_path):
@@ -17,6 +21,15 @@ def req_dir_list(dir_path):
     print(message)
     s.connect(("localhost", 9999))
     s.send(message)
+
+    recv = s.recv(PCKT_LEN_MAX)
+    print("Got: " +str(recv))
+
+    print("\n\nDirectory list:")
+
+    values = recv.decode('ascii').split('\x00')
+
+    print(values)
     pass
 
 dir_path = "/home/shlomi/"
